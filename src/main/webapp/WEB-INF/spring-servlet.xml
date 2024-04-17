@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:http="http://www.springframework.org/schema/c" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/mvc
+            http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <mvc:annotation-driven/>
+    <context:component-scan base-package="com.college.student"/>
+
+    <bean id="springDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://127.0.0.1:3306/collegeadministration"/>
+        <property name="username" value="root"/>
+        <property name="password" value="Chakri@1234"/>
+    </bean>
+    <bean id="jdbc" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="springDataSource"/>
+    </bean>
+
+    <bean id="apacheDataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://127.0.0.1:3306/collegeadministration"/>
+        <property name="username" value="root"/>
+        <property name="password" value="Chakri@1234"/>
+    </bean>
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="apacheDataSource"/>
+        <property name="annotatedClasses">
+            <list>
+                <value>com.college.student.pojo.Student</value>
+                <value>com.college.student.pojo.Address</value>
+                <value>com.college.student.pojo.Admission</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="transactionManager2" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <tx:annotation-driven transaction-manager="transactionManager2"/>
+
+    <bean id="studentRepositoryCSV" class="com.college.student.repository.impl.InCSVFileStudentRepositoryImpl"/>
+    <bean id="studentRepositoryDb" class="com.college.student.repository.impl.StudentRepositoryImpl"/>
+    <bean id="studentRepositoryFile" class="com.college.student.repository.impl.InFileStudentRepositoryImpl"/>
+    <bean id="studentRepositoryInMemory" class="com.college.student.repository.impl.InMemoryStudentRepositoryImpl"/>
+    <bean id="admissionRepository" class="com.college.student.repository.impl.AdmissionRepositoryImpl"/>
+    <bean id="addressRepository" class="com.college.student.repository.impl.AddressRepositoryImpl"/>
+
+    <bean id="studentRepositoryFactory" class="com.college.student.repository.factory.StudentRepositoryFactory"/>
+
+    <bean id="studentService" class="com.college.student.service.impl.StudentServiceImpl">
+        <constructor-arg value="DB" type="com.college.student.constant.StorageType"/>
+        <constructor-arg ref="studentRepositoryFactory"/>
+        <constructor-arg ref="addressRepository"/>
+        <constructor-arg ref="admissionRepository"/>
+    </bean>
+
+    <bean id="addressService" class="com.college.student.service.impl.AddressServiceImpl">
+        <constructor-arg ref="addressRepository"/>
+    </bean>
+
+    <bean id="admissionService" class="com.college.student.service.impl.AdmissionServiceImpl">
+        <constructor-arg ref="admissionRepository"/>
+    </bean>
+
+
+    <bean id="getStudentEventListener" class="com.college.student.listener.GetStudentEventListener"/>
+    <bean id="addStudentEventListener" class="com.college.student.listener.AddStudentEventListener"/>
+    <bean id="deleteStudentEventListener" class="com.college.student.listener.DeleteStudentEventListener"/>
+    <bean id="updateStudentEventListener" class="com.college.student.listener.UpdateStudentEventListener"/>
+    <bean id="getAllStudentEventListener" class="com.college.student.listener.GetAllStudentEventListener"/>
+</beans>

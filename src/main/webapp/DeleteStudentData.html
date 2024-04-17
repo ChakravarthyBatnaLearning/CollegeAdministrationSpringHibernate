@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Student</title>
+</head>
+<body>
+<div id="userNameDisplay" style="position: absolute; top: 10px; right: 10px;"></div>
+<div id="studentInfo">
+    <!-- Student information will be displayed here -->
+</div>
+
+<script>
+    // Get the query string from the URL
+    const queryString = window.location.search;
+
+    // Parse the query string to get parameters
+    const urlParams = new URLSearchParams(queryString);
+
+    // Get the value of the rollNo parameter
+    const rollNo = urlParams.get('rollNo');
+    fetch(`http://localhost:8084/CollegeAdministrationSpring/api/login`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('userNameDisplay').innerText = `Welcome : ${data.userName}`;
+            // Create the main page link dynamically
+            const mainPageLink = document.createElement('a');
+            mainPageLink.href = "ListStudentDataTable.html";
+            mainPageLink.innerHTML = "<h3>Main Page</h3>";
+            document.body.appendChild(mainPageLink);
+        })
+        .catch(error => console.error('Error fetching JSON data:', error));
+
+    // Send data to deleteStudentServlet as JSON
+    fetch(`http://localhost:8084/CollegeAdministrationSpring/api/student/${rollNo}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+        .then(response => response.json())
+        .then(data => {
+            const deletedRollNo = data;
+            console.log("Roll No. deleted:", deletedRollNo);
+            // Display success message directly on the page
+            document.getElementById('studentInfo').innerHTML = `<h3>Student with Roll No ${deletedRollNo} has been successfully deleted.</h3>`;
+        })
+        .catch(error => {
+            console.error('Error deleting student:', error);
+            // Handle error here
+        });
+    function logout() {
+        // Create a form element
+        const form = document.createElement('form');
+        form.method = 'POST'; // Set method to POST
+        form.action = 'logout'; // Set action URL
+        // Append the form to the body and submit it
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>
+<br><br>
+<div style="text-align: center;">
+    <!-- Add an onclick event to trigger the logout function -->
+    <a href="#" onclick="logout()"><h3>Logout</h3></a>
+</div>
+</body>
+</html>
+
