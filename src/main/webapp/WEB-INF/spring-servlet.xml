@@ -16,7 +16,7 @@
 
     <bean id="springDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://127.0.0.1:3306/collegeadministration"/>
+        <property name="url" value="jdbc:mysql://127.0.0.1:3306/collegeadministrationhibernate"/>
         <property name="username" value="root"/>
         <property name="password" value="Chakri@1234"/>
     </bean>
@@ -26,7 +26,7 @@
 
     <bean id="apacheDataSource" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://127.0.0.1:3306/collegeadministration"/>
+        <property name="url" value="jdbc:mysql://127.0.0.1:3306/collegeadministrationhibernate"/>
         <property name="username" value="root"/>
         <property name="password" value="Chakri@1234"/>
     </bean>
@@ -43,6 +43,7 @@
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
                 <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
             </props>
         </property>
     </bean>
@@ -50,6 +51,7 @@
     <bean id="transactionManager2" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
+
     <tx:annotation-driven transaction-manager="transactionManager2"/>
 
     <bean id="studentRepositoryCSV" class="com.college.student.repository.impl.InCSVFileStudentRepositoryImpl"/>

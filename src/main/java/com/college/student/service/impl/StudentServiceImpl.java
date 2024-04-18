@@ -53,22 +53,11 @@ public class StudentServiceImpl implements com.college.student.service.StudentSe
             StudentNotFoundException, AdmissionRecordNotFoundException, AddressRecordNotFoundException {
         Student student = getStudentByRollNo(rollNo);
         if (student == null) return null;
-        if (student.getAdmission() != null) admissionRepository.deleteStudentAdmission(rollNo);
-        if (student.getAddressList() != null) {
-            addressRepository.deleteAllStudentAddresses(rollNo);
-        }
         return this.studentRepository.deleteStudent(rollNo);
     }
 
     public Student updateStudentDetailsByRollNo(Student updateStudent) throws ServerUnavailableException, StudentNotFoundException, AddressRecordNotFoundException, AdmissionRecordNotFoundException {
-        if (updateStudent.getAddressList() != null) {
-            for (Address address : updateStudent.getAddressList()) {
-                addressRepository.updateStudentAddressByRollNo(updateStudent.getRollNo(), address, address.getAddressType());
-            }
-        }
-        if (updateStudent.getAdmission() != null) {
-            admissionRepository.updateStudentAdmission(updateStudent.getAdmission(), updateStudent.getRollNo());
-        }
+
         return this.studentRepository.updateStudentByRollNo(updateStudent);
     }
 

@@ -3,23 +3,16 @@ package com.college.student.pojo;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 @Entity
 @Table(name = "admission")
 public class Admission implements Cloneable, Serializable, Comparable<Admission> {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ADMISSION_ID")
     private int admissionId;
-    @Column(name = "ROLL_NO",insertable=false, updatable=false)
+    @Column(name = "ROLL_NO")
     private int rollNo;
-
-    @OneToOne
-    @JoinColumn(name = "ROLL_NO",referencedColumnName = "ROLL_NO")
-    private Student student;
 
     @Column(name = "COURSE")
     private String course;
@@ -30,6 +23,9 @@ public class Admission implements Cloneable, Serializable, Comparable<Admission>
     @Column(name = "ADMISSION_YEAR")
     private int admissionYear;
 
+    @OneToOne
+    @JoinColumn(name = "STUDENT_ROLL_NO")
+    private Student student;
     public Student getStudent() {
         return student;
     }
@@ -84,7 +80,7 @@ public class Admission implements Cloneable, Serializable, Comparable<Admission>
                 "course='" + course + '\'' +
                 ", section=" + section +
                 ", admissionYear=" + admissionYear +
-                ", rollNo=" + rollNo +
+                ", rollNo=" + +
                 '}';
     }
 
@@ -94,20 +90,25 @@ public class Admission implements Cloneable, Serializable, Comparable<Admission>
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        Admission admission = (Admission) object;
-        return section == admission.section && admissionYear == admission.admissionYear && rollNo == admission.rollNo && Objects.equals(course, admission.course);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(course, section, admissionYear, rollNo);
-    }
-
-    @Override
     public int compareTo(Admission o) {
-        return Integer.compare(o.getRollNo(), rollNo);
+        return 0;
     }
+
+//    @Override
+//    public boolean equals(Object object) {
+//        if (this == object) return true;
+//        if (object == null || getClass() != object.getClass()) return false;
+//        Admission admission = (Admission) object;
+//        return section == admission.section && admissionYear == admission.admissionYear && rollNo == admission.rollNo && Objects.equals(course, admission.course);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(course, section, admissionYear, rollNo);
+//    }
+//
+//    @Override
+//    public int compareTo(Admission o) {
+//        return Integer.compare(o.getRollNo(), rollNo);
+//    }
 }

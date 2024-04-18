@@ -3,6 +3,7 @@ package com.college.student.pojo;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,8 +12,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "student")
 public class Student implements Serializable, Comparable<Student>, Cloneable {
-    private static final long serialVersionUID = 5868686868678586L;
-
     @Id
     @Column(name = "ROLL_NO")
     private int rollNo;
@@ -29,27 +28,11 @@ public class Student implements Serializable, Comparable<Student>, Cloneable {
     @Column(name = "GENDER")
     private String gender;
 
-    @OneToMany(targetEntity = Address.class,mappedBy = "student", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private List<Address> addressList;
 
-    @OneToOne(targetEntity = Admission.class,mappedBy = "student", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
     private Admission admission;
-
-    public List<Address> getAddressList() {
-        return addressList;
-    }
-
-    public void setAddressList(List<Address> addressList) {
-        this.addressList = addressList;
-    }
-
-    public Admission getAdmission() {
-        return admission;
-    }
-
-    public void setAdmission(Admission admission) {
-        this.admission = admission;
-    }
 
     public int getRollNo() {
         return this.rollNo;
@@ -68,7 +51,7 @@ public class Student implements Serializable, Comparable<Student>, Cloneable {
     }
 
     public byte getAge() {
-        return this.age;
+        return (byte) this.age;
     }
 
     public void setAge(byte age) {
@@ -125,5 +108,21 @@ public class Student implements Serializable, Comparable<Student>, Cloneable {
     @Override
     protected Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+
+    public List<Address> getAddressList() {
+        return addressList;
+    }
+
+    public void setAddressList(List<Address> addressList) {
+        this.addressList = addressList;
+    }
+
+    public Admission getAdmission() {
+        return admission;
+    }
+
+    public void setAdmission(Admission admission) {
+        this.admission = admission;
     }
 }

@@ -4,24 +4,18 @@ import com.college.student.repository.constants.AddressType;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 @Entity
-@Table(name = "address")
+@Table(name = "ADDRESS")
 public class Address implements Cloneable, Serializable, Comparable<Address> {
 
     private static final long serialVersionUID = 25235232423L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ADDRESS_ID")
     private int addressId;
     @Column(name = "ROLL_NO")
     private int rollNo;
-
-    @ManyToOne
-    @JoinColumn(name = "ROLL_NO",referencedColumnName = "ROLL_NO")
-    private Student student;
 
     @Column(name = "COUNTRY")
     private String country;
@@ -36,6 +30,21 @@ public class Address implements Cloneable, Serializable, Comparable<Address> {
     @Column(name = "ADDRESS_TYPE")
     private AddressType addressType;
 
+    @ManyToOne
+    @JoinColumn(name = "STUDENT_ROLL_NO")
+    private Student student;
+
+
+
+    public AddressType getAddressType() {
+        return addressType;
+    }
+
+    public void setAddressType(AddressType addressType) {
+        this.addressType = addressType;
+    }
+
+
     public int getAddressId() {
         return addressId;
     }
@@ -44,9 +53,9 @@ public class Address implements Cloneable, Serializable, Comparable<Address> {
         this.addressId = addressId;
     }
 
-    public AddressType getAddressType() {
-        return addressType;
-    }
+//    public AddressType getAddressType() {
+//        return addressType;
+//    }
 
     public Student getStudent() {
         return student;
@@ -56,9 +65,9 @@ public class Address implements Cloneable, Serializable, Comparable<Address> {
         this.student = student;
     }
 
-    public void setAddressType(AddressType addressType) {
-        this.addressType = addressType;
-    }
+//    public void setAddressType(AddressType addressType) {
+//        this.addressType = addressType;
+//    }
 
     public String getCountry() {
         return country;
@@ -92,18 +101,18 @@ public class Address implements Cloneable, Serializable, Comparable<Address> {
         this.rollNo = rollNo;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(country, state, city, rollNo);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Address address = (Address) obj;
-        return rollNo == address.rollNo;
-    }
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(country, state, city, rollNo);
+//    }
+//
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (this == obj) return true;
+//        if (obj == null || getClass() != obj.getClass()) return false;
+//        Address address = (Address) obj;
+//        return rollNo == address.rollNo;
+//    }
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
@@ -116,12 +125,17 @@ public class Address implements Cloneable, Serializable, Comparable<Address> {
                 "country='" + country + '\'' +
                 ", state='" + state + '\'' +
                 ", city='" + city + '\'' +
-                ", rollNo=" + rollNo +
+                ", rollNo=" + +
                 '}';
     }
 
     @Override
     public int compareTo(Address o) {
-        return Integer.compare(rollNo, ((Address) o).rollNo);
+        return 0;
     }
+//
+//    @Override
+//    public int compareTo(Address o) {
+//        return Integer.compare(rollNo, ((Address) o).rollNo);
+//    }
 }

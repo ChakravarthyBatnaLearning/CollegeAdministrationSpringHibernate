@@ -27,6 +27,7 @@
             <AppenderRef ref="Console"/>
             <AppenderRef ref="File"/>
         </Root>
+        <Logger name="org.hibernate" level="DEBUG"/>
 
     </Loggers>
 </Configuration>

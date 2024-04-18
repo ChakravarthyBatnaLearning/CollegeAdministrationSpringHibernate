@@ -37,10 +37,11 @@ public class AddressController {
     @PutMapping("/{studentRollNo}/address")
     @ResponseBody
     public Address updateStudentAddress(@RequestBody Address studentAddress, @PathVariable int studentRollNo) throws ServerUnavailableException, AddressRecordNotFoundException {
-        logger.info("Successfully Received Student RollNo : {}", studentRollNo);
-        Address updatedAddress = addressService.updateStudentAddressByRollNo(studentRollNo, studentAddress, studentAddress.getAddressType());
-        logger.info("Successfully Updated Address for Student RollNo : {}", studentRollNo);
-        return updatedAddress;
+//        logger.info("Successfully Received Student RollNo : {}", studentRollNo);
+//        Address updatedAddress = addressService.updateStudentAddressByRollNo(studentRollNo, studentAddress, studentAddress.getAddressType());
+//        logger.info("Successfully Updated Address for Student RollNo : {}", studentRollNo);
+//        return updatedAddress;
+        return null;
 
     }
 
