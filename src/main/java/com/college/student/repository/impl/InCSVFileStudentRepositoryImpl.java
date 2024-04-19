@@ -1,8 +1,8 @@
 package com.college.student.repository.impl;
 
+import com.college.student.constant.StorageType;
 import com.college.student.pojo.Student;
 import com.college.student.repository.StudentRepository;
-import com.college.student.constant.StorageType;
 import com.college.student.utils.CSVReadAndWriter;
 
 import java.io.File;
@@ -37,6 +37,7 @@ public class InCSVFileStudentRepositoryImpl implements StudentRepository {
         return null;
     }
 
+
     @Override
     public void addStudent(Student student) {
         csvReadAndWriter.writeStudent(student);
@@ -50,11 +51,6 @@ public class InCSVFileStudentRepositoryImpl implements StudentRepository {
     @Override
     public Student updateStudentByRollNo(Student student) {
         return csvReadAndWriter.updateStudent(student);
-    }
-
-    @Override
-    public Student getStudentData(int studentRollNo) {
-        return csvReadAndWriter.getStudentByRollNo(studentRollNo);
     }
 
     @Override

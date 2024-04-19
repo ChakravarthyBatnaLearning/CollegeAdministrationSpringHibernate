@@ -2,21 +2,25 @@ package com.college.student.pojo;
 
 import com.college.student.repository.constants.AddressType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
-
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "ADDRESS")
 public class Address implements Cloneable, Serializable, Comparable<Address> {
 
     private static final long serialVersionUID = 25235232423L;
+    @Column(name = "ADDRESS_ID")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ADDRESS_ID")
-    private int addressId;
-    @Column(name = "ROLL_NO")
-    private int rollNo;
-
+    private int addressID;
     @Column(name = "COUNTRY")
     private String country;
 
@@ -30,89 +34,10 @@ public class Address implements Cloneable, Serializable, Comparable<Address> {
     @Column(name = "ADDRESS_TYPE")
     private AddressType addressType;
 
-    @ManyToOne
-    @JoinColumn(name = "STUDENT_ROLL_NO")
+    @ManyToOne()
+    @JoinColumn(name = "STUDENT_ROLL_NO",referencedColumnName = "ROLL_NO")
     private Student student;
 
-
-
-    public AddressType getAddressType() {
-        return addressType;
-    }
-
-    public void setAddressType(AddressType addressType) {
-        this.addressType = addressType;
-    }
-
-
-    public int getAddressId() {
-        return addressId;
-    }
-
-    public void setAddressId(int addressId) {
-        this.addressId = addressId;
-    }
-
-//    public AddressType getAddressType() {
-//        return addressType;
-//    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
-//    public void setAddressType(AddressType addressType) {
-//        this.addressType = addressType;
-//    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public int getRollNo() {
-        return rollNo;
-    }
-
-    public void setRollNo(int rollNo) {
-        this.rollNo = rollNo;
-    }
-
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(country, state, city, rollNo);
-//    }
-//
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (this == obj) return true;
-//        if (obj == null || getClass() != obj.getClass()) return false;
-//        Address address = (Address) obj;
-//        return rollNo == address.rollNo;
-//    }
 
     @Override
     protected Object clone() throws CloneNotSupportedException {

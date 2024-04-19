@@ -41,10 +41,6 @@
     </filter-mapping>
 
 
-
-<!--    <welcome-file-list>-->
-<!--        <welcome-file>LoginPage.html</welcome-file>-->
-<!--    </welcome-file-list>-->
 <!--    <filter>-->
 <!--        <filter-name>loggingFilter</filter-name>-->
 <!--        <filter-class>com.college.student.logging.LoggingFilter</filter-class>-->

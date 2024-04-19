@@ -6,6 +6,10 @@ import com.college.student.pojo.Address;
 import com.college.student.repository.AddressRepository;
 import com.college.student.repository.constants.AddressType;
 import jakarta.servlet.http.HttpServletResponse;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +22,20 @@ import java.util.List;
 @Component
 public class AddressRepositoryImpl implements AddressRepository {
     private static final Logger logger = LoggerFactory.getLogger(AddressRepositoryImpl.class);
+    @Autowired
+    private SessionFactory sessionFactory;
 
 
     @Override
     public boolean addStudentAddress(Address studentAddress, int studentRollNo) throws ServerUnavailableException {
-
+        try {
+            Session session = sessionFactory.openSession();
+            Transaction transaction = session.beginTransaction();
+            session.persist(studentAddress);
+            return true;
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        }
         return true;
     }
 

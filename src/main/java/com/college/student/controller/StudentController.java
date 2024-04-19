@@ -6,7 +6,6 @@ import com.college.student.pojo.Student;
 import com.college.student.service.StudentService;
 import com.college.student.sort.StudentAgeAndGenderComparator;
 import com.college.student.utils.HttpUtil;
-import jakarta.persistence.Entity;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:8084")
+@CrossOrigin(origins = "http://localhost:8080")
 // ctrl + alt + O to remove unused imports
 @Controller
 
@@ -90,7 +89,7 @@ public class StudentController {
     @DeleteMapping("/{rollNo}")
     @ResponseBody
     public String deleteStudentData(@PathVariable String rollNo) throws ServerUnavailableException, StudentNotFoundException, AdmissionRecordNotFoundException, AddressRecordNotFoundException {
-        logger.info("Request to Delete Student Successfully Received Student RollNo : {}" ,Integer.parseInt(rollNo));
+        logger.info("Request to Delete Student Successfully Received Student RollNo : {}", Integer.parseInt(rollNo));
         Student student = studentService.deleteStudentByRollNo(Integer.parseInt(rollNo));
         logger.info("Successfully Deleted the Student : {}", student);
         applicationEventPublisher.publishEvent(new DeleteStudentEvent(this.getClass(), student));

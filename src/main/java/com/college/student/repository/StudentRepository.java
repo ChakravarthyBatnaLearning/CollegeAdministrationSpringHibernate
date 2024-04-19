@@ -14,7 +14,6 @@ public interface StudentRepository {
     Student deleteStudent(int rollNo) throws ServerUnavailableException,StudentNotFoundException;   //deleting specific student from list;
     Student updateStudentByRollNo(Student student) throws ServerUnavailableException,StudentNotFoundException;
     //update specific student by rollNo from list
-    Student getStudentData(int studentRollNo) throws ServerUnavailableException, StudentNotFoundException;  //to get specific student data by rollNo;
     Student getStudentDataWithAssociations(int studentRollNo) throws ServerUnavailableException,StudentNotFoundException;
     boolean isExist(int rollNo) throws ServerUnavailableException,StudentNotFoundException;
     public boolean accept(StorageType storageType);

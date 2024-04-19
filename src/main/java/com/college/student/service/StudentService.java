@@ -15,8 +15,6 @@ public interface StudentService {
 
     public Student updateStudentDetailsByRollNo(Student updateStudent) throws ServerUnavailableException, StudentNotFoundException, AddressRecordNotFoundException, AdmissionRecordNotFoundException;
 
-    public Student getStudentByRollNo(int studentRollNo) throws ServerUnavailableException,StudentNotFoundException;
-
     public boolean isStudentExist(int rollNo) throws ServerUnavailableException, StudentNotFoundException;
     Student getCompleteStudentData(int studentRollNo) throws ServerUnavailableException, StudentNotFoundException;
 

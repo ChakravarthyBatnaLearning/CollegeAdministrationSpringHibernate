@@ -1,8 +1,10 @@
 package com.college.student.repository.impl;
 
+import com.college.student.constant.StorageType;
+import com.college.student.exception.ServerUnavailableException;
+import com.college.student.exception.StudentNotFoundException;
 import com.college.student.pojo.Student;
 import com.college.student.repository.StudentRepository;
-import com.college.student.constant.StorageType;
 import com.college.student.utils.FileUtils;
 
 import java.io.File;
@@ -67,17 +69,6 @@ public class InFileStudentRepositoryImpl implements StudentRepository {
         return null;
     }
 
-    @Override
-    public Student getStudentData(int studentRollNo) {
-        Iterator<Student> iterator = this.fileUtils.readObject().iterator();
-        while (iterator.hasNext()) {
-            Student student = iterator.next();
-            if(student.getRollNo() == studentRollNo) {
-                return student;
-            }
-        }
-        return null;
-    }
 
     @Override
     public Student getStudentDataWithAssociations(int studentRollNo) {
@@ -85,7 +76,8 @@ public class InFileStudentRepositoryImpl implements StudentRepository {
     }
 
     @Override
-    public boolean isExist(int rollNo) {
-        return getStudentData(rollNo) != null;
+    public boolean isExist(int rollNo) throws ServerUnavailableException, StudentNotFoundException {
+        return false;
     }
+
 }

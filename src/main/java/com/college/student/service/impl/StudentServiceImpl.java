@@ -10,6 +10,7 @@ import com.college.student.repository.AddressRepository;
 import com.college.student.repository.AdmissionRepository;
 import com.college.student.repository.StudentRepository;
 import com.college.student.repository.factory.StudentRepositoryFactory;
+import com.college.student.service.StudentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -17,7 +18,7 @@ import org.springframework.dao.DataAccessException;
 import java.util.List;
 
 
-public class StudentServiceImpl implements com.college.student.service.StudentService {
+public class StudentServiceImpl implements StudentService {
     private static final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     private static final LRUCache<Integer, Student> studentLRUCache = new LRUCache<>(5);
@@ -33,16 +34,6 @@ public class StudentServiceImpl implements com.college.student.service.StudentSe
 
     public void addStudent(Student student) throws DuplicateRollNoFoundException, ServerUnavailableException, DuplicateAdmissionFoundException {
         this.studentRepository.addStudent(student);
-//        //adding address if it is not null;
-//        if (student.getAddressList() != null) {
-//            for (Address address : student.getAddressList()) {
-//                addressRepository.addStudentAddress(address, student.getRollNo());
-//            }
-//        }
-//        //adding admission if it is not null;
-//        if (student.getAdmission() != null) {
-//            admissionRepository.addStudentAdmission(student.getAdmission(), student.getRollNo());
-//        }
     }
 
     public List<Student> listStudents(boolean withAssociations) throws ServerUnavailableException {
@@ -51,7 +42,7 @@ public class StudentServiceImpl implements com.college.student.service.StudentSe
 
     public Student deleteStudentByRollNo(int rollNo) throws ServerUnavailableException,
             StudentNotFoundException, AdmissionRecordNotFoundException, AddressRecordNotFoundException {
-        Student student = getStudentByRollNo(rollNo);
+        Student student = getCompleteStudentData(rollNo);
         if (student == null) return null;
         return this.studentRepository.deleteStudent(rollNo);
     }
@@ -61,15 +52,6 @@ public class StudentServiceImpl implements com.college.student.service.StudentSe
         return this.studentRepository.updateStudentByRollNo(updateStudent);
     }
 
-    public Student getStudentByRollNo(int studentRollNo) throws ServerUnavailableException,StudentNotFoundException {
-        Student student = studentLRUCache.get(studentRollNo);
-        if (student == null) {
-            student = this.studentRepository.getStudentData(studentRollNo);
-            studentLRUCache.put(studentRollNo, student);
-            logger.info("Cache is Empty, Student Added to Cache, Now Cache size is : {}", studentLRUCache.size());
-        }
-        return student;
-    }
 
     public boolean isStudentExist(int rollNo) throws ServerUnavailableException, StudentNotFoundException {
         return this.studentRepository.isExist(rollNo);

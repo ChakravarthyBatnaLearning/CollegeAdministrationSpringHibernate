@@ -1,8 +1,8 @@
 package com.college.student.repository.impl;
 
+import com.college.student.constant.StorageType;
 import com.college.student.pojo.Student;
 import com.college.student.repository.StudentRepository;
-import com.college.student.constant.StorageType;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -53,18 +53,6 @@ public class InMemoryStudentRepositoryImpl implements StudentRepository {
             }
         }
         return null;
-    }
-
-    @Override
-    public Student getStudentData(int studentRollNo) {
-        Iterator<Student> iterator = studentList.iterator();
-        while (iterator.hasNext()) {
-            Student student = iterator.next();
-            if(student.getRollNo() == studentRollNo) {
-                return student;
-            }
-        }
-       return null;
     }
 
     @Override
