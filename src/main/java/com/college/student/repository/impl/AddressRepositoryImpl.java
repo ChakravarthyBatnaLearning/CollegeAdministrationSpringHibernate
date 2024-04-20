@@ -4,7 +4,6 @@ import com.college.student.exception.ServerUnavailableException;
 import com.college.student.pojo.Address;
 import com.college.student.repository.AddressRepository;
 import com.college.student.repository.constants.AddressType;
-import jakarta.servlet.http.HttpServletResponse;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -20,11 +19,15 @@ import java.util.List;
 
 @Component
 public class AddressRepositoryImpl implements AddressRepository {
+
     private static final Logger logger = LoggerFactory.getLogger(AddressRepositoryImpl.class);
-    private static String SELECT_QUERY = "SELECT a.addressID, a.country, a.state, a.city,a.addressType " +
-            "FROM Address a WHERE a.student.rollNo = :rollNo";
     private static final String SELECT_QUERY_BY_ADDRESS_TYPE = "SELECT a.addressID, a.country, a.state, a.city,a.addressType " +
             "FROM Address a WHERE a.student.rollNo = :rollNo AND a.addressType = :addressType";
+    private static final String UPDATE_ADDRESS_QUERY = "UPDATE Address a SET a.country = :newCountry, a.state = :newState, " +
+            "a.city = :newCity WHERE a.student.rollNo = :rollNo";
+    private static final String SELECT_QUERY = "SELECT a.addressID, a.country, a.state, a.city,a.addressType " +
+            "FROM Address a WHERE a.student.rollNo = :rollNo";
+
     @Autowired
     private SessionFactory sessionFactory;
 
@@ -38,19 +41,27 @@ public class AddressRepositoryImpl implements AddressRepository {
             transaction.commit();
             return true;
         } catch (HibernateException e) {
-
+            logger.error("Error while adding student address for RollNo: {}", studentRollNo, e);
+            throw new ServerUnavailableException("Error While Adding the Student Address", 500);
         }
-        return true;
     }
 
     @Override
-    public Address updateStudentAddressByRollNo(int rollNo, Address address, AddressType addressType)
-            throws ServerUnavailableException {
+    public Address updateStudentAddressByRollNo(int rollNo, Address address, AddressType addressType) throws ServerUnavailableException {
         try {
-
+            Session session = sessionFactory.openSession();
+            Transaction transaction = session.beginTransaction();
+            Query<Address> addressQuery = session.createQuery(UPDATE_ADDRESS_QUERY);
+            addressQuery.setParameter("newCountry", address.getCountry());
+            addressQuery.setParameter("newState", address.getState());
+            addressQuery.setParameter("newCity", address.getCity());
+            addressQuery.setParameter("rollNo", rollNo);
+            int rowsEffected = addressQuery.executeUpdate();
+            transaction.commit();
+            if (rowsEffected != 0) logger.info("Address Updated Successfully {}", address);
         } catch (DataAccessException e) {
-            logger.error("Error While Updating Student Data having RollNo : {}", rollNo, e);
-            throw new ServerUnavailableException("Server Unavailable Please Try After Some Time", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            logger.error("Error while updating student address for RollNo: {}", rollNo, e);
+            throw new ServerUnavailableException("Error While Updating the Student Address", 500);
         }
         return address;
     }
@@ -71,11 +82,12 @@ public class AddressRepositoryImpl implements AddressRepository {
             }
             session.flush();
             transaction.commit();
+            logger.debug("All addresses deleted successfully for RollNo: {}", studentRoll);
             return true;
         } catch (HibernateException e) {
-
+            logger.error("Error while deleting all student addresses for RollNo: {}", studentRoll, e);
+            throw new ServerUnavailableException("Error While Deleting All Student Addresses", 500);
         }
-        return false;
     }
 
     @Override
@@ -95,7 +107,8 @@ public class AddressRepositoryImpl implements AddressRepository {
             session.flush();
             transaction.commit();
         } catch (HibernateException e) {
-
+            logger.error("Error while retrieving student addresses for RollNo: {}", studentRollNo, e);
+            throw new ServerUnavailableException("Error While Retrieving Student Addresses", 500);
         }
 
         return studentAddressList;
@@ -115,9 +128,9 @@ public class AddressRepositoryImpl implements AddressRepository {
             session.flush();
             transaction.commit();
         } catch (HibernateException e) {
-
+            logger.error("Error while retrieving student address for RollNo: {} and AddressType: {}", rollNo, addressType, e);
+            throw new ServerUnavailableException("Error While Retrieving Student Address by RollNo and AddressType", 500);
         }
-
         return address;
     }
 }

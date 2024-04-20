@@ -76,7 +76,7 @@ public class InFileStudentRepositoryImpl implements StudentRepository {
     }
 
     @Override
-    public boolean isExist(int rollNo) throws ServerUnavailableException, StudentNotFoundException {
+    public boolean isExist(int rollNo) throws ServerUnavailableException{
         return false;
     }
 
