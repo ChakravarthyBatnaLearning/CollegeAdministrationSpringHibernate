@@ -4,7 +4,6 @@ import com.college.student.constant.StorageType;
 import com.college.student.exception.DuplicateRollNoFoundException;
 import com.college.student.exception.ServerUnavailableException;
 import com.college.student.exception.StudentNotFoundException;
-import com.college.student.pojo.Address;
 import com.college.student.pojo.Student;
 import com.college.student.repository.StudentRepository;
 import com.college.student.utils.MapObjectToStudent;
@@ -23,11 +22,18 @@ import java.util.List;
 
 @Component
 public class StudentRepositoryImpl implements StudentRepository {
-    private static final Logger logger = LoggerFactory.getLogger(StudentRepositoryImpl.class);
 
+    private static final Logger logger = LoggerFactory.getLogger(StudentRepositoryImpl.class);
+    private static String LIST_QUERY_WITH_ASOCIATIONS = "SELECT s.rollNo, s.name, s.age, s.phoneNo, s.gender, " +
+            "a.country, a.state, a.city, a.addressType, " +
+            "ad.course, ad.section, ad.admissionYear " +
+            "FROM Student s LEFT JOIN s.addressList a LEFT JOIN s.admission ad";
+    private static String LIST_QUERY = "SELECT new com.college.student.pojo.Student(s.rollNo, s.name, s.age, " +
+            "s.phoneNo, s.gender) FROM Student s";
+    private static String SELECT_QUERY = "SELECT new com.college.student.pojo.Student(s.rollNo, s.name, s.age," +
+            " s.phoneNo, s.gender) FROM Student s WHERE s.rollNo = :rollNo";
     @Autowired
     private SessionFactory sessionFactory;
-
 
     public boolean accept(StorageType storageType) {
         return storageType == StorageType.DB;
@@ -39,13 +45,17 @@ public class StudentRepositoryImpl implements StudentRepository {
         try {
             Session session = sessionFactory.openSession();
             Transaction transaction = session.beginTransaction();
-            String queryStr = "SELECT s.rollNo, s.name, s.age, s.phoneNo, s.gender, " +
-                    "a.country, a.state, a.city, a.addressType, " +
-                    "ad.course, ad.section, ad.admissionYear " +
-                    "FROM Student s LEFT JOIN s.addressList a LEFT JOIN s.admission ad";
-            Query<Object[]> query = session.createQuery(queryStr);
-            List<Object[]> resultList = query.getResultList();
-            studentList = MapObjectToStudent.mapResultListToStudent(resultList);
+            if (withAssociations) {
+
+                Query<Object[]> query = session.createQuery(LIST_QUERY_WITH_ASOCIATIONS);
+                List<Object[]> resultList = query.getResultList();
+                studentList = MapObjectToStudent.mapResultListToStudent(resultList);
+            } else {
+                Query<Student> query = session.createQuery(LIST_QUERY, Student.class);
+                studentList = query.getResultList();
+
+            }
+            session.flush();
             transaction.commit();
         } catch (HibernateException e) {
             e.printStackTrace();
@@ -55,11 +65,12 @@ public class StudentRepositoryImpl implements StudentRepository {
 
 
     @Override
-    public void addStudent(Student student) throws DuplicateRollNoFoundException, ServerUnavailableException {
+    public void addStudent(Student student) throws ServerUnavailableException {
         try {
             Session session = sessionFactory.openSession();
             Transaction transaction = session.beginTransaction();
             session.persist(student);
+            session.flush();
             transaction.commit();
         } catch (HibernateException e) {
             logger.error("Error While Adding Student Data ", e);
@@ -68,74 +79,55 @@ public class StudentRepositoryImpl implements StudentRepository {
     }
 
     @Override
-    public Student deleteStudent(int rollNo) throws StudentNotFoundException, ServerUnavailableException {
+    public Student deleteStudent(int rollNo) throws  ServerUnavailableException {
         Student student = null;
+        Session session = null;
         try {
-            Session session = sessionFactory.openSession();
+            session = sessionFactory.openSession();
             Transaction transaction = session.beginTransaction();
+            student = getStudentDataWithAssociations(rollNo);
+            //   session.delete(student);
+            session.remove(student);
+            session.flush();
+            transaction.commit();
         } catch (HibernateException e) {
-            logger.error("Error While Adding Student Data ", e);
-            throw new ServerUnavailableException("Error while Adding Student", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            logger.error("Error While Deleting Student Data ", e);
+            throw new ServerUnavailableException("Error while Deleting Student", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
         return student;
     }
 
     @Override
-    public Student updateStudentByRollNo(Student student) throws ServerUnavailableException, StudentNotFoundException {
-
+    public Student updateStudentByRollNo(Student student) throws ServerUnavailableException{
         return null;
     }
 
     @Override
-    public Student getStudentDataWithAssociations(int studentRollNo) throws StudentNotFoundException, ServerUnavailableException {
+    public Student getStudentDataWithAssociations(int studentRollNo) throws ServerUnavailableException {
         Student student = null;
         Session session = null;
         Transaction transaction = null;
         try {
+
             session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-
-            // Create HQL query to fetch student data along with associations
-            Query<Object[]> query = session.createQuery(
-                    "SELECT s.rollNo, s.name, s.age, s.phoneNo, s.gender, " +
-                            "a.country, a.state, a.city, a.addressType, " +
-                            "ad.course, ad.section, ad.admissionYear " +
-                            "FROM Student s " +
-                            "LEFT JOIN s.addressList a " +
-                            "LEFT JOIN s.admission ad " +
-                            "WHERE s.rollNo = :rollNo", Object[].class);
-            query.setParameter("rollNo", studentRollNo);
-
-            // Execute query and retrieve the results
-            List<Object[]> resultList = query.getResultList();
-
-            // Commit transaction
+            Query<Student> studentQuery = session.createQuery(SELECT_QUERY, Student.class);
+            studentQuery.setParameter("rollNo", studentRollNo);
+            student = studentQuery.getSingleResult();
+            session.flush();
             transaction.commit();
-
-            // Check if any results are returned
-            if (!resultList.isEmpty()) {
-                // Process the first result
-                Object[] result = resultList.get(0);
-                student = MapObjectToStudent.mapResultToStudent(result);
-            } else {
-                throw new StudentNotFoundException("Student with roll number " + studentRollNo + " not found.", 500);
-            }
         } catch (HibernateException e) {
             if (transaction != null) {
                 transaction.rollback();
             }
             logger.error("Error While Retrieving Student Data ", e);
             throw new ServerUnavailableException("Error while Retrieving Student", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        } finally {
-            if (session != null) {
-                session.close();
-            }
         }
         return student;
     }
 
     @Override
-    public boolean isExist(int rollNo) throws ServerUnavailableException, StudentNotFoundException {
+    public boolean isExist(int rollNo) throws ServerUnavailableException{
         return getStudentDataWithAssociations(rollNo) != null;
     }
 }

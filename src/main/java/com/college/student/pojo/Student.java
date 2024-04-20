@@ -20,6 +20,14 @@ import java.util.Objects;
 @AllArgsConstructor
 @Table(name = "student")
 public class Student implements Serializable, Comparable<Student>, Cloneable {
+
+    public Student(Integer rollNo, String name, Byte age, Long phoneNo,String gender) {
+        this.rollNo = rollNo;
+        this.name = name;
+        this.age = age;
+        this.phoneNo = phoneNo;
+        this.gender = gender;
+    }
     @Id
     @Column(name = "ROLL_NO")
     private int rollNo;
@@ -36,10 +44,10 @@ public class Student implements Serializable, Comparable<Student>, Cloneable {
     @Column(name = "GENDER")
     private String gender;
 
-    @OneToMany(targetEntity = Address.class, mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(targetEntity = Address.class, mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Address> addressList = new ArrayList<>();
 
-    @OneToOne(targetEntity = Admission.class, mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(targetEntity = Admission.class, mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Admission admission;
 
 

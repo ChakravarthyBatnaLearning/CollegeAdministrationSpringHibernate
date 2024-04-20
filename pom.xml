@@ -151,11 +151,13 @@
         </dependency>
 
         <!-- Hibernate ORM framework for mapping Java objects to database tables -->
+        <!-- https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core -->
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>6.4.4.Final</version>
+            <version>7.0.0.Alpha1</version>
         </dependency>
+
 
         <!-- Spring ORM for integrating ORM frameworks like Hibernate with Spring -->
         <dependency>

@@ -17,16 +17,19 @@ import java.io.Serializable;
 public class Admission implements Cloneable, Serializable, Comparable<Admission>
 
 {
-    public Admission(Integer admissionID,String course, Integer section, Integer admissionYear) {
+    public Admission(Integer admissionID,String course, Integer section, Integer admissionYear,Integer rollNo) {
+        this.rollNo = rollNo;
         this.admissionID = admissionID;
         this.course = course;
         this.section = section;
         this.admissionYear = admissionYear;
     }
+    private int rollNo;
     @Column(name = "ADMISSION_ID")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int admissionID;
+
     @Column(name = "COURSE")
     private String course;
 
@@ -35,9 +38,9 @@ public class Admission implements Cloneable, Serializable, Comparable<Admission>
 
     @Column(name = "ADMISSION_YEAR")
     private int admissionYear;
+
     @JoinColumn(name = "STUDENT_ROLL_NO", referencedColumnName = "ROLL_NO")
     @OneToOne()
-
     private Student student;
 
 

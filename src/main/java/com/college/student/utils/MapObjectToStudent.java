@@ -47,42 +47,4 @@ public class MapObjectToStudent {
         }
         return new ArrayList<>(studentMap.values());
     }
-    public static Student mapResultToStudent(Object[] result) {
-        int rollNo = (int) result[0];
-        String name = (String) result[1];
-        byte age = (byte) result[2];
-        long phoneNo = (long) result[3];
-        String gender = (String) result[4];
-
-        Student student = new Student();
-        student.setRollNo(rollNo);
-        student.setName(name);
-        student.setAge(age);
-        student.setPhoneNo(phoneNo);
-        student.setGender(gender);
-        if (student.getAddressList() == null) {
-            student.setAddressList(new ArrayList<>());
-        }
-
-        if (result[5] != null && result[6] != null && result[7] != null && result[8] != null) {
-            // Set address fields to the student's address list
-            Address address = new Address();
-            address.setCountry((String) result[5]);
-            address.setState((String) result[6]);
-            address.setCity((String) result[7]);
-            address.setAddressType((AddressType) result[8]);
-            student.getAddressList().add(address);
-        }
-
-        // Check for null values before accessing elements of result
-        if (result[9] != null && result[10] != null && result[11] != null) {
-            // Set admission fields to the student's admission
-            Admission admission = new Admission();
-            admission.setCourse((String) result[9]);
-            admission.setSection((int) result[10]);
-            admission.setAdmissionYear((int) result[11]);
-            student.setAdmission(admission);
-        }
-        return student;
-    }
 }

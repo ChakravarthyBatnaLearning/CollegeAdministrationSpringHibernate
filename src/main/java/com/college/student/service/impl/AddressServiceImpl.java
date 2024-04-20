@@ -22,12 +22,12 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public Address updateStudentAddressByRollNo(int rollNo, Address address, AddressType addressType) throws ServerUnavailableException, AddressRecordNotFoundException {
+    public Address updateStudentAddressByRollNo(int rollNo, Address address, AddressType addressType) throws ServerUnavailableException {
         return addressRepository.updateStudentAddressByRollNo(rollNo, address, addressType);
     }
 
     @Override
-    public boolean deleteAllStudentAddresses(int studentRoll) throws AddressRecordNotFoundException, ServerUnavailableException {
+    public boolean deleteAllStudentAddresses(int studentRoll) throws  ServerUnavailableException {
         return addressRepository.deleteAllStudentAddresses(studentRoll);
     }
 
