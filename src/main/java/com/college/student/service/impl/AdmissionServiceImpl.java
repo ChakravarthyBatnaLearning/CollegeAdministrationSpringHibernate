@@ -4,7 +4,9 @@ import com.college.student.exception.ServerUnavailableException;
 import com.college.student.pojo.Admission;
 import com.college.student.repository.AdmissionRepository;
 import com.college.student.service.AdmissionService;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class AdmissionServiceImpl implements AdmissionService {
 
     private final AdmissionRepository admissionRepository;

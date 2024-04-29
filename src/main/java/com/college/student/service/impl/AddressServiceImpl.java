@@ -6,9 +6,11 @@ import com.college.student.pojo.Address;
 import com.college.student.repository.AddressRepository;
 import com.college.student.repository.constants.AddressType;
 import com.college.student.service.AddressService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 public class AddressServiceImpl implements AddressService {
     private final AddressRepository addressRepository;
 

@@ -49,7 +49,7 @@ public class StudentController {
     @GetMapping("/{rollNo}")
     @ResponseBody
     public Student getStudentData(HttpServletRequest request, @PathVariable(value = "rollNo") String rollNo)
-            throws StudentNotFoundException, ServerUnavailableException {
+            throws ServerUnavailableException {
         Student student = null;
         logger.info("Request Received to Get the Student Details with RollNo : {} and UserName : {}",
                 rollNo, (String) request.getSession(false).getAttribute("username"));
@@ -82,7 +82,6 @@ public class StudentController {
         student = studentService.updateStudentDetailsByRollNo(student);
         logger.info("Request Successfully Completed for Update for Student {}", student);
         applicationEventPublisher.publishEvent(new UpdateStudentEvent(this.getClass(), student));
-        //        EventHandler.getInstance(false).publishEvent(new UpdateStudentEvent(this.getClass(), student));
         return student;
     }
 

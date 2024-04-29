@@ -1,29 +1,14 @@
 package com.college.student.pojo;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Objects;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 @Entity
 @Table(name = "admission")
-public class Admission implements Cloneable, Serializable, Comparable<Admission>
+public class Admission implements Cloneable, Serializable, Comparable<Admission> {
 
-{
-    public Admission(Integer admissionID,String course, Integer section, Integer admissionYear,Integer rollNo) {
-        this.rollNo = rollNo;
-        this.admissionID = admissionID;
-        this.course = course;
-        this.section = section;
-        this.admissionYear = admissionYear;
-    }
     private int rollNo;
     @Column(name = "ADMISSION_ID")
     @Id
@@ -43,14 +28,74 @@ public class Admission implements Cloneable, Serializable, Comparable<Admission>
     @OneToOne()
     private Student student;
 
+    public Admission() {
+    }  //no args
+
+    public Admission(Integer admissionID, String course, Integer section, Integer admissionYear, Integer rollNo) {
+        this.rollNo = rollNo;
+        this.admissionID = admissionID;
+        this.course = course;
+        this.section = section;
+        this.admissionYear = admissionYear;
+    }
+
+    public int getRollNo() {
+        return rollNo;
+    }
+
+    public void setRollNo(int rollNo) {
+        this.rollNo = rollNo;
+    }
+
+    public int getAdmissionID() {
+        return admissionID;
+    }
+
+    public void setAdmissionID(int admissionID) {
+        this.admissionID = admissionID;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
+    }
+
+    public int getSection() {
+        return section;
+    }
+
+    public void setSection(int section) {
+        this.section = section;
+    }
+
+    public int getAdmissionYear() {
+        return admissionYear;
+    }
+
+    public void setAdmissionYear(int admissionYear) {
+        this.admissionYear = admissionYear;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
 
     @Override
     public String toString() {
         return "Admission{" +
-                "course='" + course + '\'' +
+                "rollNo=" + rollNo +
+                ", admissionID=" + admissionID +
+                ", course='" + course + '\'' +
                 ", section=" + section +
                 ", admissionYear=" + admissionYear +
-                ", rollNo=" + +
+                ", student=" + student +
                 '}';
     }
 
@@ -60,7 +105,21 @@ public class Admission implements Cloneable, Serializable, Comparable<Admission>
     }
 
     @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Admission admission = (Admission) object;
+        return rollNo == admission.rollNo && admissionID == admission.admissionID && section == admission.section && admissionYear == admission.admissionYear && Objects.equals(course, admission.course) && Objects.equals(student, admission.student);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(rollNo, admissionID, course, section, admissionYear, student);
+    }
+
+
+    @Override
     public int compareTo(Admission o) {
-        return 0;
+        return Integer.compare(this.admissionID, o.getAdmissionID());
     }
 }
